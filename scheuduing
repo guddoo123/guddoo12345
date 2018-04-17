@@ -1,0 +1,79 @@
+
+#include<stdio.h>
+#include<conio.h>
+ 
+struct process
+{
+      char process_name;
+      int arrival_time, burst_time, ct, waiting_time, turnaround_time, priority;
+      int status;
+}process_queue[20];
+ 
+int limit;
+ 
+void Arrival_Time_Sorting()
+{
+      struct process temp;
+      int m, n;
+      for(m = 0; m < limit - 1; m++)
+      {
+            for(n = n + 1; n < limit; n++)
+            {
+                  if(process_queue[m].arrival_time > process_queue[n].arrival_time)
+                  {
+                        temp = process_queue[m];
+                        process_queue[m] = process_queue[n];
+                        process_queue[m] = temp;
+                }
+            
+}
+
+      }
+}
+ 
+main()
+{
+      int m, time = 0, burst_time = 0, largest;
+      char c;
+      float wait_time = 0, turnaround_time = 0, average_waiting_time, average_turnaround_time;
+      printf("\nEnter Total Number of Processes:\t");
+      scanf("%d", &limit);
+      for(m = 0, c = 'A'; m< limit; m++, c++)
+      {
+            process_queue[m].process_name = c;
+            printf("\nEnter Details For Process[%C]:\n", process_queue[m].process_name);
+            printf("Enter Arrival Time:\t");
+            scanf("%d", &process_queue[m].arrival_time );
+            printf("Enter Burst Time:\t");
+            scanf("%d", &process_queue[m].burst_time);
+            printf("Enter Priority:\t");
+            scanf("%d", &process_queue[m].priority);
+            process_queue[m].status = 0;
+            burst_time = burst_time + process_queue[m].burst_time;
+      }
+      Arrival_Time_Sorting();
+      process_queue[9].priority = -9999;
+      printf("\nProcess Name\tArrival Time\tBurst Time\tPriority\tWaiting Time");
+      for(time = process_queue[0].arrival_time; time < burst_time;)
+      {
+            largest = 9;
+            for(m = 0; m < limit; m++)
+            {
+                  if(process_queue[m].arrival_time <= time && process_queue[m].status != 1 && process_queue[m].priority > process_queue[largest].priority)
+                  {
+                        largest = m;
+                  }
+            }
+            time = time + process_queue[largest].burst_time;
+            process_queue[largest].ct = time;
+            process_queue[largest].waiting_time = process_queue[largest].ct - process_queue[largest].arrival_time - process_queue[largest].burst_time;
+            process_queue[largest].turnaround_time = process_queue[largest].ct - process_queue[largest].arrival_time;
+            process_queue[largest].status = 1;
+            wait_time = wait_time + process_queue[largest].waiting_time;
+            turnaround_time = turnaround_time + process_queue[largest].turnaround_time;
+            printf("%c\t\t%d\t\t%d\t\t%d\t\t%d", process_queue[largest].process_name, process_queue[largest].arrival_time, process_queue[largest].burst_time, process_queue[largest].priority, process_queue[largest].waiting_time);
+      }
+      average_waiting_time = wait_time / limit;
+      printf("\n\nAverage waiting time %f\n", average_waiting_time);
+      printf("Average Turnaround Time %f\n", average_turnaround_time);
+}
